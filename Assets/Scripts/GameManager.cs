@@ -8,19 +8,28 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
     public float score;
+    private float scoreMilestone;
+    public int coin;
+    public float obsSpeedMultiplier = 1;
+    public float backgroundSpeed;
     private PlayerController playerControllerScript;
+    private SpawnManager spawnManagerScript;
 
     public Transform startingPoint;
     public float lerpSpeed;
 
     public TextMeshProUGUI scoreText;
+    public TextMeshProUGUI coinText;
 
     public bool gameIsPaused;
     void Start()
     {
-        playerControllerScript = GameObject.Find("Player").GetComponent<PlayerController>();
+        playerControllerScript = GameObject.Find("Player").GetComponent<PlayerController>(); //reference PlayerController
+        spawnManagerScript = GameObject.Find("SpawnManager").GetComponent<SpawnManager>(); // reference SpawnManager
         score = 0;
-
+        coin = 0;
+        scoreMilestone = 500; // meaning every 500 is the milestone
+        spawnManagerScript.repeatRate = 3.0f;
         playerControllerScript.gameOver = true;
         StartCoroutine(PlayIntro());
 
@@ -32,6 +41,7 @@ public class GameManager : MonoBehaviour
         if (!playerControllerScript.gameOver  && !gameIsPaused)
 
         {
+            coinText.text = coin.ToString(); // display the coins to the UI text
             if (playerControllerScript.doubleSpeed)
             {
                 score += 2;
@@ -40,7 +50,18 @@ public class GameManager : MonoBehaviour
                 score++;
             }
             //Debug.Log("Score: " + score);
-            scoreText.text = "Score: " + score.ToString(); //display the score to the UI text
+            scoreText.text = score.ToString(); //display the score to the UI text
+
+            if (spawnManagerScript.repeatRate <= 1) {
+                spawnManagerScript.repeatRate = 1f; // limit the minimum repeatRate
+            }
+            // if the current score REACHED the scoreMilestone, the repeat rate will decrease in seconds
+            else if (score >= scoreMilestone && spawnManagerScript.repeatRate !=1) { 
+                spawnManagerScript.repeatRate -= 0.1f; // minus the repeatRate by 0.1 second
+                obsSpeedMultiplier += 0.2f; // the Add Speed in Moving Left Objects
+                scoreMilestone += scoreMilestone; // add the Score Milestone to itself
+                
+            }
 
         }
 
