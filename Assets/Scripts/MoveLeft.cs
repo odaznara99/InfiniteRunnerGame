@@ -22,15 +22,15 @@ public class MoveLeft : MonoBehaviour
         { 
             speed = speed * gameManager.obsSpeedMultiplier;
         }
-        
-
-        
+               
     }
 
     // Update is called once per frame
     void Update()
 
     {
+
+
         //If not game over, move objects to left
         if(playerControllerScript.gameOver == false) 
         {

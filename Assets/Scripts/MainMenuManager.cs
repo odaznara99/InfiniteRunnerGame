@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class MainMenuManager : MonoBehaviour
 {
     public void StartGame() {
-        SceneManager.LoadScene("Prototype 3");
+        SceneManager.LoadScene("Stage1");
     
     }
 

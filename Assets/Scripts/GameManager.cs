@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
         spawnManagerScript = GameObject.Find("SpawnManager").GetComponent<SpawnManager>(); // reference SpawnManager
         score = 0;
         coin = 0;
-        scoreMilestone = 500; // meaning every 500 is the milestone
+        scoreMilestone = 1000; // meaning every 500 is the milestone
         spawnManagerScript.repeatRate = 3.0f;
         playerControllerScript.gameOver = true;
         StartCoroutine(PlayIntro());

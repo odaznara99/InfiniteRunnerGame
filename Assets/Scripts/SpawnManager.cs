@@ -7,7 +7,7 @@ public class SpawnManager : MonoBehaviour
 
     public float startDelay, repeatRate;
     public GameObject[] obstaclePrefabs;
-    private Vector3 spawnPos = new Vector3(25, 0, 0);
+    private Vector3 spawnPos = new Vector3(30, 0, 0);
 
     private PlayerController playerControllerScript;
     // Start is called before the first frame update

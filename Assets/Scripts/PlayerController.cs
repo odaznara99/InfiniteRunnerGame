@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour
     public float doubleJumpForce = 25;
     //Super Speed / Dash Boolean
     public bool doubleSpeed = false;
-   
+
     private float knockBack = 0.5f; // knockback when Hit Obstacle
     void Start()
     {
@@ -41,34 +41,34 @@ public class PlayerController : MonoBehaviour
         playerAnim = GetComponent<Animator>();
         playerAudio = GetComponent<AudioSource>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        
+
         Physics.gravity *= gravityModifier;
         doubleJumpUsed = false;
     }
 
     void HorizontalMovement() {
-        
-            //horizontalInput = Input.GetAxis("Horizontal");  //-- this code is now on Move(); it will set the horizontalInput variable
-            
-            
-            //Move horizontally
-            transform.Translate(Vector3.forward * horizontalInput * Time.deltaTime * speed);
 
-            //limit horizontal movement
-            if (transform.position.x < 0)
-            {
-                transform.position = new Vector3(0, transform.position.y, transform.position.z);
-            }
-            if (transform.position.x > xBound)
-            {
-                transform.position = new Vector3(xBound, transform.position.y, transform.position.z);
-            }
-        
+        //horizontalInput = Input.GetAxis("Horizontal");  //-- this code is now on Move(); it will set the horizontalInput variable
+
+
+        //Move horizontally
+        transform.Translate(Vector3.forward * horizontalInput * Time.deltaTime * speed);
+
+        //limit horizontal movement
+        if (transform.position.x < 0)
+        {
+            transform.position = new Vector3(0, transform.position.y, transform.position.z);
+        }
+        if (transform.position.x > xBound)
+        {
+            transform.position = new Vector3(xBound, transform.position.y, transform.position.z);
+        }
+
     }
 
     //Methods that will be passed on UI Control Buttons
-    public void MoveLeft() {horizontalInput = -1;}
-    public void MoveRight() {horizontalInput = 1;}
+    public void MoveLeft() { horizontalInput = -1; }
+    public void MoveRight() { horizontalInput = 1; }
     public void StopMoving() { horizontalInput = 0; }
 
     public void Dash() {
@@ -94,7 +94,7 @@ public class PlayerController : MonoBehaviour
             playerAudio.PlayOneShot(jumpSound, 1.0f); // play the Jump audio
             doubleJumpUsed = false;
         }
-        else if (!isOnGround && !doubleJumpUsed &&!gameManager.gameIsPaused && !gameOver)
+        else if (!isOnGround && !doubleJumpUsed && !gameManager.gameIsPaused && !gameOver)
         {
             doubleJumpUsed = true;
             //Double Jump using velocity will make it more consistent than using AddForce
@@ -127,11 +127,13 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         //If not GAMEOVER and NOT PAUSED, you can do this CONTROLS
-        if (!gameOver && !gameManager.gameIsPaused) {
+        if (!gameOver && !gameManager.gameIsPaused)
+        {
             HorizontalMovement(); // horizontal movement
             //UpdateDash(); //Player superspeed/ dash ability
 
-            if (Input.GetKeyDown(KeyCode.Space)) {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
                 Jump();
             }
 
@@ -149,16 +151,26 @@ public class PlayerController : MonoBehaviour
             }
             */
         }
-       
+        //If Game Over You can do this Controls
+        else if (gameOver && gameOverPanel.active)
+        {
+            //Press Space to restart game
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                gameManager.RestartGame();
+                gameOver = false;
+            }
+        }
+
         //Pause game
-        if (Input.GetKeyDown(KeyCode.Escape) && !gameManager.gameIsPaused &&!gameOver)
+        if (Input.GetKeyDown(KeyCode.Escape) && !gameManager.gameIsPaused && !gameOver)
         {
             gameManager.PauseGame();
 
 
-        //If already paused, then RESUME
+            //If already paused, then RESUME
         }
-        else if (Input.GetKeyDown(KeyCode.Escape) && gameManager.gameIsPaused && !gameOver) {
+        else if ((Input.GetKeyDown(KeyCode.Escape)|| Input.GetKeyDown(KeyCode.Space)) && gameManager.gameIsPaused && !gameOver) {
             gameManager.ResumeGame();
         }
 
