@@ -194,9 +194,10 @@ public class PlayerController : MonoBehaviour
             playerAnim.SetInteger("DeathType_int", randomDeath); // which death animation will play
             explosionParticle.Play(); // play explosion particle
             dirtParticle.Stop(); // stop the dirt particle
-            playerAudio.PlayOneShot(crashSound, 1.0f); // play 
-            gameOverPanel.SetActive(true); // Game Over UI will appear
-            topPanel.SetActive(false); // Top Panel or the Game Play UI will disappear
+            playerAudio.PlayOneShot(crashSound, 1.0f); // play
+            //Game Over UI
+            StartCoroutine(DelayedAction()); //Delay before UI will appear
+            
         }
     }
 
@@ -206,5 +207,18 @@ public class PlayerController : MonoBehaviour
             gameManager.coin++;
             Destroy(other.gameObject);
         }
+    }
+
+    IEnumerator DelayedAction()
+    {
+        Debug.Log("Before delay");
+
+        // Wait for seconds
+        yield return new WaitForSeconds(2f);
+
+        // This will be executed after seconds
+        Debug.Log("After delay");
+        gameOverPanel.SetActive(true); // Game Over UI will appear
+        topPanel.SetActive(false); // Top Panel or the Game Play UI will disappear
     }
 }
