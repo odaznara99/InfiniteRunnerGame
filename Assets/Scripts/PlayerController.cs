@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour
     public bool doubleSpeed = false;
 
     private float knockBack = 0.5f; // knockback when Hit Obstacle
+    public bool playerInvincible;//
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
@@ -48,7 +49,7 @@ public class PlayerController : MonoBehaviour
 
     void HorizontalMovement() {
 
-        //horizontalInput = Input.GetAxis("Horizontal");  //-- this code is now on Move(); it will set the horizontalInput variable
+        horizontalInput = Input.GetAxis("Horizontal");  //-- this code is now on Move(); it will set the horizontalInput variable
 
 
         //Move horizontally
@@ -87,6 +88,7 @@ public class PlayerController : MonoBehaviour
         //If player is on ground and not game over, go JUMP
         if (isOnGround && !gameManager.gameIsPaused && !gameOver)
         {
+            Debug.Log("Player just JUMP");
             playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isOnGround = false;
             playerAnim.SetTrigger("Jump_trig"); // play the jump animation
@@ -96,6 +98,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (!isOnGround && !doubleJumpUsed && !gameManager.gameIsPaused && !gameOver)
         {
+            Debug.Log("Player just DOUBLE JUMP");
             doubleJumpUsed = true;
             //Double Jump using velocity will make it more consistent than using AddForce
             playerRb.velocity = new Vector3(playerRb.velocity.x, doubleJumpForce, playerRb.velocity.z);
@@ -180,44 +183,68 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ground")) { // if hit Ground THEN
-            isOnGround = true;
-            if (!gameOver) { dirtParticle.Play(); } // Play dirt particle effect
-            
-        } else if (collision.gameObject.CompareTag("Obstacle")) { // If hit Obstacles THEN
-    
-            gameOver = true; // Game Over Boolean is TRUE
-            transform.Translate(Vector3.back * knockBack); // Add a knock Back Force
-            int randomDeath = Random.Range(1, 2); //  DECLARE int Random Range of Death Animation
-            Debug.Log("Game Over");
-            playerAnim.SetBool("Death_b", true); // death animation
-            playerAnim.SetInteger("DeathType_int", randomDeath); // which death animation will play
-            explosionParticle.Play(); // play explosion particle
-            dirtParticle.Stop(); // stop the dirt particle
-            playerAudio.PlayOneShot(crashSound, 1.0f); // play
-            //Game Over UI
-            StartCoroutine(DelayedAction()); //Delay before UI will appear
-            
+        if (!gameOver)
+        {
+            if (collision.gameObject.CompareTag("Ground"))
+            { // if hit Ground THEN
+                isOnGround = true;
+                Debug.Log("Player is on the ground");
+                if (!gameOver) { dirtParticle.Play(); } // Play dirt particle effect
+
+            }
+            else if (collision.gameObject.CompareTag("Obstacle") && !playerInvincible)
+            { // If hit Obstacles THEN
+                Debug.Log("Player hit an Obstacle");
+
+                gameOver = true; // Game Over Boolean is TRUE
+                transform.Translate(Vector3.back * knockBack); // Add a knock Back Force
+                int randomDeath = Random.Range(1, 2); //  DECLARE int Random Range of Death Animation               
+                playerAnim.SetBool("Death_b", true); // death animation
+                playerAnim.SetInteger("DeathType_int", randomDeath); // which death animation will play
+                explosionParticle.Play(); // play explosion particle
+                dirtParticle.Stop(); // stop the dirt particle
+                playerAudio.PlayOneShot(crashSound, 1.0f); // play
+                StartCoroutine(DelayedAction()); //Delay before UI will appear
+
+            }
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Coin")) {
-            gameManager.coin++;
-            Destroy(other.gameObject);
+        if (!gameOver)
+        {
+            if (other.CompareTag("Coin"))
+            {
+                Debug.Log("Triggered a Coin");
+                gameManager.coin++;
+                Destroy(other.gameObject);
+            }
+
+            if (other.CompareTag("DestroyTrigger")) {
+                Debug.Log("Destroy an Object");
+                playerInvincible = true;
+
+            }
         }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("DestroyTrigger"))
+        {
+            Debug.Log("Not invincible");
+            playerInvincible = false;
+
+        }
+
     }
 
     IEnumerator DelayedAction()
     {
-        Debug.Log("Before delay");
-
         // Wait for seconds
         yield return new WaitForSeconds(2f);
-
         // This will be executed after seconds
-        Debug.Log("After delay");
         gameOverPanel.SetActive(true); // Game Over UI will appear
         topPanel.SetActive(false); // Top Panel or the Game Play UI will disappear
     }

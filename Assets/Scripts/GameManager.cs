@@ -8,6 +8,7 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
     public float score;
+    public float highScore;
     private float scoreMilestone;
     public int coin;
     public float obsSpeedMultiplier = 1;
@@ -20,8 +21,10 @@ public class GameManager : MonoBehaviour
 
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI coinText;
+    public TextMeshProUGUI highScoreText = null;
 
     public bool gameIsPaused;
+    public bool setNewHighScore;
     void Start()
     {
         playerControllerScript = GameObject.Find("Player").GetComponent<PlayerController>(); //reference PlayerController
@@ -32,6 +35,10 @@ public class GameManager : MonoBehaviour
         spawnManagerScript.repeatRate = 3.0f;
         playerControllerScript.gameOver = true;
         StartCoroutine(PlayIntro());
+
+        //Get the HighScore from PlayerPrefs
+        highScore = PlayerPrefs.GetFloat("HighScore", 0);
+        highScoreText.text = highScore.ToString();
 
     }
 
@@ -47,6 +54,7 @@ public class GameManager : MonoBehaviour
                 score += 2;
             }
             else {
+                //Add score per frame
                 score++;
             }
             //Debug.Log("Score: " + score);
@@ -67,6 +75,15 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R)) {
             RestartGame();
+        }
+
+        // Check if the current score beats the high score
+        if (score > highScore)
+        {          
+            highScore = score;
+            setNewHighScore = true;
+            PlayerPrefs.SetFloat("HighScore", highScore);
+            highScoreText.text = highScore.ToString();
         }
 
     }
@@ -109,6 +126,18 @@ public class GameManager : MonoBehaviour
     public void QuitGame() {
         Application.Quit();
 
+    }
+
+    private void OnApplicationQuit()
+    {
+        PlayerPrefs.SetFloat("HighScore", highScore);
+        PlayerPrefs.Save();
+    }
+
+    public void ResetHighScore()
+    {
+        PlayerPrefs.DeleteKey("HighScore");
+        highScore = 0;
     }
 
     public void PauseGame() {
