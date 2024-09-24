@@ -222,7 +222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c31d9ef0e0478141aeebb897c4a45c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  crateDestroyEffect: {fileID: 5277604887049685414}
+  destroyParticleFX: {fileID: 5277604887049685414}
 --- !u!54 &4267454535928047606
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -297,11 +297,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 7a9bced7715b2c047b5413e33bc60d5c, type: 2}
     - target: {fileID: 5041701761548866816, guid: 82cd477f7eac1364c99f9c16c9a49fa8, type: 3}
       propertyPath: playOnAwake
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5041701761548941074, guid: 82cd477f7eac1364c99f9c16c9a49fa8, type: 3}
       propertyPath: playOnAwake
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5041701761548941074, guid: 82cd477f7eac1364c99f9c16c9a49fa8, type: 3}
       propertyPath: InitialModule.startSize.scalar
@@ -310,6 +310,10 @@ PrefabInstance:
     - target: {fileID: 5041701761567968722, guid: 82cd477f7eac1364c99f9c16c9a49fa8, type: 3}
       propertyPath: m_Name
       value: FX_Crate_2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5041701761567968722, guid: 82cd477f7eac1364c99f9c16c9a49fa8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5041701761568244860, guid: 82cd477f7eac1364c99f9c16c9a49fa8, type: 3}
       propertyPath: m_RootOrder

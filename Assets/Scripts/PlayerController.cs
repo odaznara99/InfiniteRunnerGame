@@ -36,6 +36,9 @@ public class PlayerController : MonoBehaviour
 
     private float knockBack = 0.5f; // knockback when Hit Obstacle
     public bool playerInvincible;//
+
+    //Destroyable Effect
+    private float knockUpForce = 30;
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
@@ -88,7 +91,7 @@ public class PlayerController : MonoBehaviour
         //If player is on ground and not game over, go JUMP
         if (isOnGround && !gameManager.gameIsPaused && !gameOver)
         {
-            Debug.Log("Player just JUMP");
+            //Debug.Log("Jump");
             playerRb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isOnGround = false;
             playerAnim.SetTrigger("Jump_trig"); // play the jump animation
@@ -98,7 +101,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (!isOnGround && !doubleJumpUsed && !gameManager.gameIsPaused && !gameOver)
         {
-            Debug.Log("Player just DOUBLE JUMP");
+            //Debug.Log("Double Jump");
             doubleJumpUsed = true;
             //Double Jump using velocity will make it more consistent than using AddForce
             playerRb.velocity = new Vector3(playerRb.velocity.x, doubleJumpForce, playerRb.velocity.z);
@@ -155,7 +158,7 @@ public class PlayerController : MonoBehaviour
             */
         }
         //If Game Over You can do this Controls
-        else if (gameOver && gameOverPanel.active)
+        else if (gameOver && gameOverPanel.activeSelf)
         {
             //Press Space to restart game
             if (Input.GetKeyDown(KeyCode.Space))
@@ -188,7 +191,7 @@ public class PlayerController : MonoBehaviour
             if (collision.gameObject.CompareTag("Ground"))
             { // if hit Ground THEN
                 isOnGround = true;
-                Debug.Log("Player is on the ground");
+                //Debug.Log("Grounded");
                 if (!gameOver) { dirtParticle.Play(); } // Play dirt particle effect
 
             }
@@ -204,7 +207,7 @@ public class PlayerController : MonoBehaviour
                 explosionParticle.Play(); // play explosion particle
                 dirtParticle.Stop(); // stop the dirt particle
                 playerAudio.PlayOneShot(crashSound, 1.0f); // play
-                StartCoroutine(DelayedAction()); //Delay before UI will appear
+                StartCoroutine(DelayGameOverPanel()); //Delay before UI will appear
 
             }
         }
@@ -214,6 +217,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!gameOver)
         {
+            //Debug.Log("Trigger Entered: " + other.name);
             if (other.CompareTag("Coin"))
             {
                 Debug.Log("Triggered a Coin");
@@ -221,31 +225,38 @@ public class PlayerController : MonoBehaviour
                 Destroy(other.gameObject);
             }
 
-            if (other.CompareTag("DestroyTrigger")) {
-                Debug.Log("Destroy an Object");
-                playerInvincible = true;
+            if (other.CompareTag("DestroyTrigger"))
+            {
+                Debug.Log("Destroy Object with effects: " + other.name + other.transform.parent.name);
+                //playerRb.velocity = new Vector3(playerRb.velocity.x, knockUpForce, playerRb.velocity.z);
+                playerAudio.PlayOneShot(destroySound, 1f);
+                //Make Player invincible
+                StartCoroutine(InvincibleTime(0.5f));
 
             }
         }
     }
 
-    private void OnTriggerExit(Collider other)
+
+    IEnumerator DelayGameOverPanel()
     {
-        if (other.CompareTag("DestroyTrigger"))
-        {
-            Debug.Log("Not invincible");
-            playerInvincible = false;
-
-        }
-
+        //Note: IEnumerator must be always called with StartCoroutine() method.
+        yield return new WaitForSeconds(2f);
+        // GameOverPanel will appear and topPanel will disappear after 2 seconds.
+        gameOverPanel.SetActive(true); 
+        topPanel.SetActive(false); 
     }
 
-    IEnumerator DelayedAction()
-    {
-        // Wait for seconds
-        yield return new WaitForSeconds(2f);
-        // This will be executed after seconds
-        gameOverPanel.SetActive(true); // Game Over UI will appear
-        topPanel.SetActive(false); // Top Panel or the Game Play UI will disappear
+    public IEnumerator InvincibleTime(float duration) {
+        //Note: IEnumerator must be always called with StartCoroutine() method.
+        playerInvincible = true;
+        Debug.Log("Player will be invincible for " + duration + " seconds");
+
+        yield return new WaitForSeconds(duration);
+
+        playerInvincible = false;
+        Debug.Log("Invincibility time out");
+
+
     }
 }
