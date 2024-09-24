@@ -23,8 +23,8 @@ public class Destroyable : MonoBehaviour
              //playerAudio.PlayOneShot(playerController.destroySound, 1f);
 
              transform.parent.gameObject.SetActive(false);
-             Destroy(transform.parent.gameObject,3f); //destroy the parent object
-             Destroy(gameObject,3f); //destory this trigger object
+             Destroy(transform.parent.gameObject); //destroy the parent object
+             Destroy(gameObject); //destory this trigger object
             
 
         }

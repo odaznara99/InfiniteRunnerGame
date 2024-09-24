@@ -37,8 +37,6 @@ public class PlayerController : MonoBehaviour
     private float knockBack = 0.5f; // knockback when Hit Obstacle
     public bool playerInvincible;//
 
-    //Destroyable Effect
-    private float knockUpForce = 30;
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
@@ -197,7 +195,7 @@ public class PlayerController : MonoBehaviour
             }
             else if (collision.gameObject.CompareTag("Obstacle") && !playerInvincible)
             { // If hit Obstacles THEN
-                Debug.Log("Player hit an Obstacle");
+                Debug.Log("Player hit an Obstacle -->> " + collision.gameObject.name);
 
                 gameOver = true; // Game Over Boolean is TRUE
                 transform.Translate(Vector3.back * knockBack); // Add a knock Back Force
@@ -229,6 +227,7 @@ public class PlayerController : MonoBehaviour
             {
                 Debug.Log("Destroy Object with effects: " + other.name + other.transform.parent.name);
                 //playerRb.velocity = new Vector3(playerRb.velocity.x, knockUpForce, playerRb.velocity.z);
+                playerAnim.Play("Running_Jump", 3, 0f);
                 playerAudio.PlayOneShot(destroySound, 1f);
                 //Make Player invincible
                 StartCoroutine(InvincibleTime(0.5f));

@@ -9,6 +9,7 @@ TagManager:
   - Obstacle
   - Coin
   - DestroyTrigger
+  - Parent
   layers:
   - Default
   - TransparentFX
