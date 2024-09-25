@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     public GameObject gameOverPanel;
     public GameObject topPanel;
     public GameObject pausedPanel;
+    public GameObject controlsPanel;
     //Game Manager
     private GameManager gameManager;
     // Audio Objects
@@ -37,6 +38,8 @@ public class PlayerController : MonoBehaviour
     private float knockBack = 0.5f; // knockback when Hit Obstacle
     public bool playerInvincible;//
 
+    private bool onMobilePlatform = false;
+
     void Start()
     {
         playerRb = GetComponent<Rigidbody>();
@@ -46,11 +49,36 @@ public class PlayerController : MonoBehaviour
 
         Physics.gravity *= gravityModifier;
         doubleJumpUsed = false;
+
+        if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            Debug.Log("Running on a mobile device.");
+            // Add mobile-specific code here
+            onMobilePlatform = true;
+        }
+        else if (Application.platform == RuntimePlatform.WindowsPlayer || Application.platform == RuntimePlatform.OSXPlayer || Application.platform == RuntimePlatform.LinuxPlayer)
+        {
+            Debug.Log("Running on a PC.");
+            // Add PC-specific code here
+            onMobilePlatform = false;
+        }
+        else
+        {
+            Debug.Log("Running on an unsupported platform.");
+            onMobilePlatform = false;
+        }
+
+        //Enable the UI Controls depending on the Platform
+        controlsPanel.SetActive(onMobilePlatform);
+        
     }
 
     void HorizontalMovement() {
 
-        horizontalInput = Input.GetAxis("Horizontal");  //-- this code is now on Move(); it will set the horizontalInput variable
+        if (!onMobilePlatform)
+        {
+            horizontalInput = Input.GetAxis("Horizontal");  //-- this code is now on Move(); it will set the horizontalInput variable
+        }
 
 
         //Move horizontally

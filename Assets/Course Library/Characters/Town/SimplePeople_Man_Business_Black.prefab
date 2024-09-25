@@ -213,6 +213,7 @@ MonoBehaviour:
   gameOverPanel: {fileID: 0}
   topPanel: {fileID: 0}
   pausedPanel: {fileID: 0}
+  controlsPanel: {fileID: 0}
   jumpSound: {fileID: 8300000, guid: 0f7d0b7c3397f4dac91f20e8a77d2d57, type: 3}
   crashSound: {fileID: 8300000, guid: 913d6445ee8cc4152a9c18da590ee203, type: 3}
   destroySound: {fileID: 8300000, guid: e7ee25a47d63b46cdaf65480d62b405c, type: 3}
@@ -225,7 +226,6 @@ MonoBehaviour:
   doubleJumpForce: 25
   doubleSpeed: 0
   playerInvincible: 0
-  crateDestroyEffect: {fileID: 1849054102882452722, guid: 9bdc39491d916c54bb11cbd8047e9207, type: 3}
 --- !u!1 &100004
 GameObject:
   m_ObjectHideFlags: 0
