@@ -154,4 +154,17 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 1; // resume the game
 
     }
+
+    public float GetCurrentScore() {
+
+        return score;
+    
+    }
+
+    public float GetHighScore()
+    {
+
+        return highScore;
+
+    }
 }

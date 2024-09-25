@@ -77,7 +77,7 @@ public class PlayerController : MonoBehaviour
 
         if (!onMobilePlatform)
         {
-            horizontalInput = Input.GetAxis("Horizontal");  //-- this code is now on Move(); it will set the horizontalInput variable
+            horizontalInput = Input.GetAxis("Horizontal");
         }
 
 
