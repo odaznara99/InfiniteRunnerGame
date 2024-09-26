@@ -6,8 +6,8 @@ public class SpawnManager : MonoBehaviour
 {
 
     public float startDelay, repeatRate;
-    public GameObject[] obstaclePrefabs;
-    private Vector3 spawnPos = new Vector3(30, 0, 0);
+    public Vector3 spawnPos = new Vector3(30, 0, 0);
+    public GameObject[] obstaclePrefabs;   
     private bool isSpawningStop = false;
 
     private PlayerController playerControllerScript;
@@ -16,7 +16,12 @@ public class SpawnManager : MonoBehaviour
     {
         playerControllerScript = GameObject.Find("Player").GetComponent<PlayerController>();
         InvokeRepeating("SpawnObstacle", startDelay, repeatRate);
-        
+
+        if (spawnPos==null) {
+            spawnPos = new Vector3(30, 0, 0);
+        }
+
+
     }
 
     // Update is called once per frame

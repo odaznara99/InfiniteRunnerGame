@@ -281,9 +281,16 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Player will be invincible for " + duration + " seconds");
 
         yield return new WaitForSeconds(duration);
+        if (!gameManager.reachingMilestone)
+        {
+            playerInvincible = false;
+            Debug.Log("Invincibility time out");
+        }
+        else
+        {
 
-        playerInvincible = false;
-        Debug.Log("Invincibility time out");
+            Debug.Log("Player is on level transition. Invincible remain true.");
+        }
 
 
     }

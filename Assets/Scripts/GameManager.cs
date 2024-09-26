@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
 {
     public float score;
     public float highScore;
-    public float scoreMilestone= 10000;
+    public float scoreMilestone= 1000;
     public int currentLevel = 1; // the current difficulty
     public GameObject levelReachedDisplay;
     public int coin;
@@ -27,13 +27,14 @@ public class GameManager : MonoBehaviour
 
     public bool gameIsPaused;
     public bool setNewHighScore;
+    public bool reachingMilestone = false;
     void Start()
     {
         playerControllerScript = GameObject.Find("Player").GetComponent<PlayerController>(); //reference PlayerController
         spawnManagerScript = GameObject.Find("SpawnManager").GetComponent<SpawnManager>(); // reference SpawnManager
         score = 0;
         coin = 0;
-        scoreMilestone = 10000; // meaning every 500 is the milestone
+        //scoreMilestone = 1000; // meaning every 500 is the milestone
         spawnManagerScript.repeatRate = 3.0f;
         playerControllerScript.gameOver = true;
         StartCoroutine(PlayIntro());
@@ -70,7 +71,7 @@ public class GameManager : MonoBehaviour
                 currentLevel++;
                 spawnManagerScript.repeatRate -= 0.1f; // minus the repeatRate by 0.1 second
                 obsSpeedMultiplier += 0.2f; // the Add Speed in Moving Left Objects
-                scoreMilestone += scoreMilestone; // add the Milestone*2 to itself
+                scoreMilestone += (scoreMilestone*1.2f); // add the Milestone*2 to itself
                 StartCoroutine(ReachMilestone());
                 
             }
@@ -120,15 +121,21 @@ public class GameManager : MonoBehaviour
     {
         //Stop spawning obstacles for 3 seconds
         Debug.Log("Reached Level: " + currentLevel);
+        reachingMilestone = true;
         spawnManagerScript.StopSpawning(true);
         levelReachedDisplay.SetActive(true);
         playerControllerScript.topPanel.SetActive(false);
+        playerControllerScript.playerInvincible = true;
 
         yield return new WaitForSeconds(5f);
+
+        reachingMilestone = false;
         spawnManagerScript.StopSpawning(false);
         levelReachedDisplay.SetActive(false);
         playerControllerScript.topPanel.SetActive(true);
-        Debug.Log("Spawning obstacles again... " + currentLevel);
+        playerControllerScript.playerInvincible = false;
+        Debug.Log("Level Transition: Invincible time out.");
+        Debug.Log("Level Transition: Spawning obstacles again... ");
 
     }
 
