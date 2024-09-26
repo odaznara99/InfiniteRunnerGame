@@ -137,6 +137,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /*
     void UpdateDash() {
 
         //Player dash
@@ -152,7 +153,7 @@ public class PlayerController : MonoBehaviour
         }
 
 
-    }
+    }*/
 
 
 

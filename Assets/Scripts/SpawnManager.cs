@@ -8,6 +8,7 @@ public class SpawnManager : MonoBehaviour
     public float startDelay, repeatRate;
     public GameObject[] obstaclePrefabs;
     private Vector3 spawnPos = new Vector3(30, 0, 0);
+    private bool isSpawningStop = false;
 
     private PlayerController playerControllerScript;
     // Start is called before the first frame update
@@ -27,10 +28,14 @@ public class SpawnManager : MonoBehaviour
     void SpawnObstacle() 
     {
         //If not Game Over, spawn obstacles
-        if(playerControllerScript.gameOver == false)
+        if(playerControllerScript.gameOver == false && !isSpawningStop)
         {
             int randomObstacle = Random.Range(0, obstaclePrefabs.Length);
             Instantiate(obstaclePrefabs[randomObstacle], spawnPos, obstaclePrefabs[randomObstacle].transform.rotation);
         }       
+    }
+
+    public void StopSpawning(bool stop) {
+        isSpawningStop = stop;
     }
 }

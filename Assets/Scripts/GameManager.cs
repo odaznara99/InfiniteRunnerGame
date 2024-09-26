@@ -9,7 +9,9 @@ public class GameManager : MonoBehaviour
 {
     public float score;
     public float highScore;
-    private float scoreMilestone;
+    public float scoreMilestone= 10000;
+    public int currentLevel = 1; // the current difficulty
+    public GameObject levelReachedDisplay;
     public int coin;
     public float obsSpeedMultiplier = 1;
     public float backgroundSpeed;
@@ -31,7 +33,7 @@ public class GameManager : MonoBehaviour
         spawnManagerScript = GameObject.Find("SpawnManager").GetComponent<SpawnManager>(); // reference SpawnManager
         score = 0;
         coin = 0;
-        scoreMilestone = 1000; // meaning every 500 is the milestone
+        scoreMilestone = 10000; // meaning every 500 is the milestone
         spawnManagerScript.repeatRate = 3.0f;
         playerControllerScript.gameOver = true;
         StartCoroutine(PlayIntro());
@@ -63,11 +65,13 @@ public class GameManager : MonoBehaviour
             if (spawnManagerScript.repeatRate <= 1) {
                 spawnManagerScript.repeatRate = 1f; // limit the minimum repeatRate
             }
-            // if the current score REACHED the scoreMilestone, the repeat rate will decrease in seconds
-            else if (score >= scoreMilestone && spawnManagerScript.repeatRate !=1) { 
+            // if the current score REACHED the scoreMilestone, the DIFFULTY will increase
+            else if (score >= scoreMilestone && spawnManagerScript.repeatRate !=1) {
+                currentLevel++;
                 spawnManagerScript.repeatRate -= 0.1f; // minus the repeatRate by 0.1 second
                 obsSpeedMultiplier += 0.2f; // the Add Speed in Moving Left Objects
-                scoreMilestone += scoreMilestone; // add the Score Milestone to itself
+                scoreMilestone += scoreMilestone; // add the Milestone*2 to itself
+                StartCoroutine(ReachMilestone());
                 
             }
 
@@ -112,7 +116,23 @@ public class GameManager : MonoBehaviour
         playerControllerScript.topPanel.SetActive(true);
     }
 
-    public void RestartGame() {
+    IEnumerator ReachMilestone()
+    {
+        //Stop spawning obstacles for 3 seconds
+        Debug.Log("Reached Level: " + currentLevel);
+        spawnManagerScript.StopSpawning(true);
+        levelReachedDisplay.SetActive(true);
+        playerControllerScript.topPanel.SetActive(false);
+
+        yield return new WaitForSeconds(5f);
+        spawnManagerScript.StopSpawning(false);
+        levelReachedDisplay.SetActive(false);
+        playerControllerScript.topPanel.SetActive(true);
+        Debug.Log("Spawning obstacles again... " + currentLevel);
+
+    }
+
+        public void RestartGame() {
         Physics.gravity = new Vector3(0, -9.8f, 0); //default gravity
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
